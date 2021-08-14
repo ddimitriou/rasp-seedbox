@@ -10,3 +10,5 @@ sudo pip3 -v install docker-compose
 
 # Installing minidlna as at the time of writing there isn't a way to run this via docker
 sudo apt-get install minidlna -y
+
+sudo raspi-config nonint do_hostname $1
