@@ -1,0 +1,79 @@
+version: "3.8"
+
+services:
+  deluge:
+    image: ghcr.io/linuxserver/deluge
+    container_name: deluge
+    network_mode: service:vpn
+    depends_on: 
+      - vpn
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Athens
+      - DELUGE_LOGLEVEL=error
+    volumes:
+      - ./configs/deluge:/config
+      - ${MEDIA_PATH}:/Downloads
+    restart: unless-stopped
+
+  sonarr:
+    image: ghcr.io/linuxserver/sonarr
+    container_name: sonarr
+    network_mode: service:vpn
+    depends_on: 
+      - vpn
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Athens
+    volumes:
+      - ./configs/sonarr:/config
+      - ${MEDIA_PATH}:/tv
+      - ${MEDIA_PATH}:/Downloads
+    restart: unless-stopped
+
+  vpn:
+    image: bubuntux/nordvpn
+    network_mode: bridge
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.conf.all.rp_filter=2
+    devices:
+      - /dev/net/tun
+    environment:
+      - USER=${NORD_VPN_USER}
+      - "PASS=${NORD_VPN_PASS}"
+      - CONNECT=Netherlands
+      - TECHNOLOGY=NordLynx
+      - NETWORK=192.168.254.0/24
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "8112:8112"
+      - "8989:8989"
+
+  samba:
+    image: dperson/samba
+    environment:
+      TZ: 'Europe/Athens'
+    ports:
+      - "137:137/udp"
+      - "138:138/udp"
+      - "139:139/tcp"
+      - "445:445/tcp"
+    read_only: true
+    tmpfs:
+      - /tmp
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    volumes:
+      - ${MEDIA_PATH}/../:/onetb
+    command: '-s "ONETB;/onetb;yes;no;no;pi" -u "pi;${SAMBA_PASS}" -p'
+
