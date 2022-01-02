@@ -12,6 +12,7 @@ It includes:
 - NTFS3G for mounting NTFS system disks.
 - SAMBA service for exposing the disks to Windows network computers.
 - MiniDLNA server for serving all the media in the Network.
+- Subtitler service based on [Subliminal's Image](https://hub.docker.com/r/dtroncy/rpi-subliminal)
 
 
 
@@ -19,12 +20,12 @@ It includes:
 
 You must run first the `./install.sh rasp-seedbox`.
 
-After the installation is complete you must run the `./setup_onetb.sh`. That is run as following:
+After the installation is complete you must run the `./setup_drive.sh`. That is run as following:
 
 ```
-$ ./setup_onetb.sh /path/to/my/media/disk LABEL_OF_MY_MEDIA_DISK
+$ sudo ./setup_drive.sh /path/to/my/media/disk LABEL_OF_MY_MEDIA_DISK
 ```
-
+Then you have to reboot the machine.
 ## usage
 
 Just run this:
@@ -37,8 +38,8 @@ You can alsow browse the logs, and see if everything is in order.
 
 Web exposable services are:
 
-- Deluge is exposed at `http://rasp-seedbox.local:8112`
-- Sonarr is exposed at `http://rasp-seedbox.local:8989`
+- Deluge is exposed at http://rasp-seedbox.local:8112
+- Sonarr is exposed at http://rasp-seedbox.local:8989
 
 
 The config folder holds all the data that are needed to save when running both deluge and sonarr, which is quite handy in case your raspberry disk gets corrupted (which happens quite often).
